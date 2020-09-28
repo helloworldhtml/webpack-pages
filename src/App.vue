@@ -9,6 +9,7 @@
 </template>
 
 <script>
+// https://github.com/search?q=webpack%E6%89%93%E5%8C%85%E5%A4%9A%E9%A1%B5%E9%9D%A2&type=
 // import img from './assets/images/timg.jpeg'
 // import './assets/styles/test.css'
 import './assets/styles/global.styl'
