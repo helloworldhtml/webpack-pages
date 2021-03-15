@@ -1,39 +1,102 @@
 <template>
   <div>
-    <h1>this is App</h1>
-    <div @click="add">添加</div>
-    <ul class="ul-color">
-      <li v-for="item in txt" :key="item">{{item}}</li>
-    </ul>
+     <div id="div">
+      <a href="/page1">page1</a>
+      <a href="/page2">page2</a>
+      <a href="/page3">page3</a>
+    </div>
+    <div id="container"></div>
   </div>
 </template>
 
 <script>
-// https://github.com/search?q=webpack%E6%89%93%E5%8C%85%E5%A4%9A%E9%A1%B5%E9%9D%A2&type=
-// import img from './assets/images/timg.jpeg'
-// import './assets/styles/test.css'
-import './assets/styles/global.styl'
-
 export default {
   name: 'App',
   data () {
-    return {
-      txt: []
-    }
+    return {}
   },
-  methods: {
-    add() {
-      this.txt.push(this.txt.length)
+  mounted() {
+    // 用es6的类写法
+    /* 实现原理
+      1.创建一个路由对象，实现register方法 处理location.pathname的值对应的回调函数
+      2.处理首页
+      3.处理其他页
+    */
+    class Router {
+      constructor (){
+        // 存储不同的path值对应的回调函数
+        this.routers = {}
+        this.listenPopState()
+        this.listenLink()
+      }
+      // 监听postState,历史记录更改的时候，将触发postState事件
+      listenPopState() {
+        window.addEventListener('popstate', (e)=>{
+          let state = e.state || {}
+          let path = state.path || ''
+          this.handler(path)
+        })
+      }
+
+      // a链接的页面跳转
+      listenLink() {
+        window.addEventListener('click', (e)=>{
+          let ev = e.target
+          if (ev.tagName === 'A' && ev.getAttribute('href')) {
+            // 阻止默认的跳转事件
+            e.preventDefault()
+            // 更新URL
+            this.urlRefresh(ev.getAttribute('href'))
+          }
+
+        })
+      }
+
+      load () {
+        let path = location.pathname
+      }
+
+      // path
+      register (path,cb) {
+        this.routers[path] = cb
+      }
+
+      // 首页
+      index (cb) {
+        this.routers['/'] = cb
+      }
+
+      // 更新URL
+      urlRefresh (path) {
+        /*
+          1. 合理的js对象
+          2. title, 现在的浏览器都不要写这个
+          3. 一个url, 要跳转的页面
+        */
+        history.pushState({path},null,path)
+        this.handler(path)
+      }
+
+      // 通用的回调函数
+      handler (path) {
+        let cb 
+        cb = this.routers[path]
+        cb.call(this)
+      }
     }
-  },
-  created() {}
+    let router = new Router()
+    router.load()
+    let container = document.getElementById('container')
+    // 回调函数
+    router.register('/page1', ()=>{
+      container.innerHTML = '我是page1'
+    })
+    router.register('/page2', ()=>{
+      container.innerHTML = '我是page2'
+    })
+    router.register('/page3', ()=>{
+      container.innerHTML = '我是page3'
+    })
+  }
 }
 </script>
-
-<style lang="stylus" scoped>
-h1
-  color: red
-  transform : translate(100px, 100px)
-.ul-color
-  color: red
-</style>

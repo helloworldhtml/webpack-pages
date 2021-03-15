@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewort" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="nav">
+      <a href="#/page1">page1</a>
+      <a href="#/page2">page2</a>
+      <a href="#/page3">page3</a>
+    </div>
+    <div id="container"></div>
+
+    <script>
+      /* 实现原理
+        1.创建一个路由对象，register方法用于处理每个hash值对应的回调函数
+        2.不存在hash的时候，默认首页，实现一个Index方法，用于处理首页的回调函数
+        3.利用hashchange事件，监听hash的变化，定义Hash变化的回调函数
+      */
+      function Router (){
+        // 用户存储不同的hash对应的回调函数
+        this.routes = {}
+
+        // 监听hashchange
+        window.addEventListener('hashchange',this.reload.bind(this))
+      }
+
+      // 首页的回调方法
+
+      Router.prototype.index = function (callback){
+        this.routes['index'] = callback
+      }
+
+      // 其他页面的回调方法
+      Router.prototype.register = function (hash, callback){
+        this.routes[hash] = callback
+      }
+
+      // 实现reload方法
+      Router.prototype.reload = function (){
+        let callback
+        let hash = location.hash.slice(1)
+        !hash ? callback = this.routes.index : callback = this.routes[hash]
+        callback.call(this)
+      }
+
+      // 调用
+      let router = new Router()
+      let container = document.getElementById('container')
+      // 首页回调函数
+      router.index(()=>{
+        container.innerHTML = '我是首页'
+      })
+      // 回调函数
+      router.register('/page1', ()=>{
+        container.innerHTML = '我是page1'
+      })
+      router.register('/page2', ()=>{
+        container.innerHTML = '我是page2'
+      })
+      router.register('/page3', ()=>{
+        container.innerHTML = '我是page3'
+      })
+      // 调用
+      router.reload()
+    </script>
+  </body>
+</html>
