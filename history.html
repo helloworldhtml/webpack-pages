@@ -19,7 +19,6 @@
       /* 实现原理
         1.创建一个路由对象，实现register方法 处理location.pathname的值对应的回调函数
         2.处理首页
-        3.处理其他页
       */
       class Router {
         constructor (){
@@ -50,12 +49,7 @@
 
           })
         }
-
-        // 
-        load () {
-          let path = location.pathname
-        }
-
+        
         // path
         register (path,cb) {
           this.routers[path] = cb
@@ -64,16 +58,6 @@
         // 首页
         index (cb) {
           this.routers['/'] = cb
-        }
-
-        // 未找到路由
-        notFound (cb) {
-          this.routers['notFound'] = cb
-        }
-
-        // 出现异常
-        error (cb) {
-          this.routers['error'] = cb
         }
 
         // 更新URL
@@ -92,15 +76,9 @@
           let cb 
           cb = this.routers[path]
           cb.call(this)
-          // if (!this.routers.hasOwnProperty(path)){
-             
-          // } else {
-
-          // }
         }
       }
       let router = new Router()
-      router.load()
       let container = document.getElementById('container')
       // 回调函数
       router.register('/page1', ()=>{

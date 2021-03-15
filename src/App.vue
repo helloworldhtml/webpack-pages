@@ -51,11 +51,6 @@ export default {
 
         })
       }
-
-      load () {
-        let path = location.pathname
-      }
-
       // path
       register (path,cb) {
         this.routers[path] = cb
@@ -63,7 +58,7 @@ export default {
 
       // 首页
       index (cb) {
-        this.routers['/'] = cb
+        this.routers['index'] = cb
       }
 
       // 更新URL
@@ -85,9 +80,11 @@ export default {
       }
     }
     let router = new Router()
-    router.load()
     let container = document.getElementById('container')
     // 回调函数
+    router.index(()=>{
+      container.innerHTML = '我是首页'
+    })
     router.register('/page1', ()=>{
       container.innerHTML = '我是page1'
     })
@@ -97,6 +94,7 @@ export default {
     router.register('/page3', ()=>{
       container.innerHTML = '我是page3'
     })
+    router.handler('index')
   }
 }
 </script>
